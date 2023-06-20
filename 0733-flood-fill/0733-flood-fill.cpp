@@ -12,9 +12,7 @@ public:
             if(nRow>=0 && nRow<n && nCol>=0 && nCol<m && image[nRow][nCol]==iniColour && ans[nRow][nCol]!=color){
                 dfs(nRow,nCol,iniColour,color,delRow,delCol,ans,image);
             }
-
         }
-
     }
 
     vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
