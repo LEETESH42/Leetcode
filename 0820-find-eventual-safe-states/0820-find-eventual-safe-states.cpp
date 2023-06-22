@@ -23,8 +23,8 @@ public:
         while(!q.empty()){
             int cur=q.front();
             q.pop();
-
             ans.push_back(cur);
+            
             for(auto it:revGraph[cur]){
                 indegree[it]--;
                 if(indegree[it]==0){
