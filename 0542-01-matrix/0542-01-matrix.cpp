@@ -20,9 +20,9 @@ public:
                 }
             }
         }
-
-        int delRow[]={-1,0,1,0};
-        int delCol[]={0,1,0,-1};
+        
+        int dr[]={-1,0,1,0};
+        int dc[]={0,-1,0,1};
 
         while(!q.empty()){
             int row=q.front().first.first;
@@ -33,16 +33,16 @@ public:
             dis[row][col]=dist;
 
             for(int i=0;i<4;i++){
-                int nrow=row+delRow[i];
-                int ncol=col+delCol[i];
+                int nRow=row+dr[i];
+                int nCol=col+dc[i];
 
-                if(nrow>=0 && nrow<n && ncol>=0 && ncol<m && vis[nrow][ncol]==0){
-                    vis[nrow][ncol]=1;
-                    q.push({{nrow,ncol},dist+1});
+                if(nRow>=0 && nRow<n && nCol>=0 && nCol<m && vis[nRow][nCol]==0){
+                    vis[nRow][nCol]=1;
+                    q.push({{nRow,nCol},dist+1});
                 }
+
             }
         }
         return dis;
-
     }
 };
