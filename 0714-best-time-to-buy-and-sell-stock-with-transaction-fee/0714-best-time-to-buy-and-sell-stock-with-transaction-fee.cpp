@@ -1,16 +1,13 @@
 class Solution {
 public:
     int maxProfit(vector<int>& prices, int fee) {
-        int aheadNotBuy,aheadBuy,curBuy,curNotBuy;
-        aheadNotBuy=0,aheadBuy=0;
-        int n=prices.size();
-        for(int i=n-1;i>=0;i--){
-            curNotBuy=max(prices[i]+aheadBuy-fee, aheadNotBuy);
-            curBuy=max(-prices[i]+aheadNotBuy, aheadBuy);
+        int buy=INT_MIN;
+        int sell=0;
 
-            aheadBuy=curBuy;
-            aheadNotBuy=curNotBuy;
+        for(int p: prices){
+            buy=max(buy,sell-p);
+            sell=max(sell,buy+p-fee);
         }
-        return aheadBuy;
+        return sell;
     }
 };
