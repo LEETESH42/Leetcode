@@ -1,23 +1,18 @@
 class Solution {
 public:
-    int hIndex(vector<int>& c) {
-        int n=c.size();
-        sort(c.begin(),c.end());
-
-        if(c[0]>=n){
-            return n;
-        }
-
-        if(n==1){
-            return !(c[0]==0);
-        }
-
-        for(int i=0;i<n;i++){
-            int left=n-i;
-            if(c[i]>=left){
-                return left;
+    int hIndex(vector<int>& citations) {
+        int n = citations.size();
+        sort(citations.begin(), citations.end());
+        int ans = 0;
+        for(int i = 0; i < n; i++){
+            if((n - i) >= citations[i]){
+                ans = citations[i];
+            }
+            else{
+                ans = max(ans, n - i);
+                break;
             }
         }
-        return 0;
+        return ans;
     }
 };
