@@ -1,54 +1,59 @@
 class Solution {
 public:
     int mod=1e9+7;
-    map<pair<int,int>, pair<int,int>> h;
+    pair<int,int> dp[101][101];
 
-    pair<int,int> solve(vector<string> &brd, int i, int j, int n, int m){
-        if(i==0 && j==0){
+    pair<int,int> help(int i, int j, vector<string>& nums){
+
+        if(i==nums.size() || j==nums[0].size() || nums[i][j]=='X'){
+            return {INT_MIN,0};
+        }
+        if(i==nums.size()-1 && j==nums[0].size()-1){
             return {0,1};
         }
 
-        if(i<0 || j<0 || i>=n || j>=m || brd[i][j]=='X'){
-            return {INT_MIN,0};
+        int x=0;
+        pair<int,int> p={-1,-1};
+        if(dp[i][j]!=p){
+            return dp[i][j];
         }
 
-        if(h.find({i,j})!=h.end()){
-            return h[{i,j}];
+        if(nums[i][j]=='E'){
+            x=0;
         }
-
-        int numb=0, cnt=0;
-
-        if(brd[i][j]!='S'){
-            numb=brd[i][j]-'0';
+        else{
+            x=nums[i][j]-'0';
         }
+        auto p1=help(i+1,j,nums);
+        auto p2=help(i,j+1,nums);
+        auto p3=help(i+1,j+1,nums);
 
-        auto a=solve(brd,i-1,j,n,m);
-        auto b=solve(brd,i,j-1,n,m);
-        auto c=solve(brd,i-1,j-1,n,m);
+        int mx=x+max(p1.first,max(p2.first,p3.first));
+        int count=0;
 
-        int curr=(max(a.first,max(b.first,c.first)))%mod;
-
-        if(curr==a.first){
-            cnt+=a.second;
+        if(mx==x+p1.first){
+            count+=p1.second;
         }
-        if(curr==b.first){
-            cnt+=b.second;
+        if(mx==x+p2.first){
+            count+=p2.second;
         }
-        if(curr==c.first){
-            cnt+=c.second;
-        }    
-        return h[{i,j}]={(curr+numb)%mod,cnt%mod};
+        if(mx==x+p3.first){
+            count+=p3.second;
+        }
+        return dp[i][j]={mx,count%mod};
     }
 
-    vector<int> pathsWithMaxScore(vector<string>& brd) {
-        int n=brd.size();
-        int m=brd[0].size();
-
-        auto ans=solve(brd,n-1,m-1,n,m);
-
+    vector<int> pathsWithMaxScore(vector<string>& board) {
+        pair<int,int> p1={-1,-1};
+        for(int i=0;i<=100;i++){
+            for(int j=0;j<=100;j++){
+                dp[i][j]=p1;
+            }
+        }
+        auto ans=help(0,0,board);
         if(ans.first<0){
             return {0,0};
         }
-        return {ans.first%mod,ans.second%mod};
+        return {ans.first, ans.second};
     }
 };
