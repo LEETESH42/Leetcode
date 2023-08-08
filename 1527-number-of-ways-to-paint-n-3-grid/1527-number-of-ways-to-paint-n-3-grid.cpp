@@ -1,34 +1,24 @@
 class Solution {
 public:
     int MOD=1e9+7;
-    int dp[5001][4][4][4];
-
-    int help(int n, int x, int y, int z){
-        if(n<0){
-            return 1;
-        }
-        int ans=0;
-
-        if(dp[n][x][y][z]!=-1){
-            return dp[n][x][y][z];
-        }
-
-        for(int i=1;i<4;i++){
-            for(int j=1;j<4;j++){
-                for(int k=1;k<4;k++){
-                    if(i==x || j==y || k==z || i==j || j==k){
-                        continue;
-                    }
-                    ans+=help(n-1,i,j,k);
-                    ans%=MOD;
-                }
-            }
-        }
-        return dp[n][x][y][z]=ans;
-    }
-
     int numOfWays(int n) {
-        memset(dp,-1,sizeof(dp));
-        return help(n-1,0,0,0);
+        // there can be 2 pattern RYR or RYG
+        // for RYR : RYR , RGR , YRY , YGY , GYG , GRG
+        // for RYG : RYG , RGY , GRY, GYR, YRG , YGR
+        // we can use RYR if we above we have : YRY , YGY , GRG ,GRY ,YRG i.e 3*RYR + 2*RYG
+        // if above is RYG then we can use : YRY , YGY , GRY , YRG i.e 2*RYR + 2*RYG
+
+        int a121=6,a123=6;
+        // base condition is we hacve 6 from 121 and 6 from 123
+        // Now iterating 
+
+        for(int i=1;i<n;i++){
+            int n121=(1l*a121*3 + 1l*a123*2)%MOD;
+            int n123=(1l*a121*2 + 1l*a123*2)%MOD;
+
+            a121=n121;
+            a123=n123;
+        }
+        return (a121+a123)%MOD;
     }
 };
