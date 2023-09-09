@@ -8,34 +8,21 @@ public:
             return dp[i][j];
         }
 
-        int mx=INT_MIN;
-        for(int ind=i;ind<=j;ind++){
-            int cost=nums[i-1]*nums[ind]*nums[j+1]+solve(i,ind-1,nums,dp)+solve(ind+1,j,nums,dp);
-            mx=max(cost,mx);
+        int mn=-1e9;
+
+        for(int k=i;k<=j;k++){
+            int steps=nums[i-1]*nums[k]*nums[j+1] + solve(i,k-1,nums,dp)+solve(k+1,j,nums,dp);
+            mn=max(mn,steps);
         }
-        return dp[i][j]=mx;
+        return dp[i][j]=mn;
     }
 
     int maxCoins(vector<int>& nums) {
         int n=nums.size();
-        nums.push_back(1);
         nums.insert(nums.begin(),1);
-        vector<vector<int>> dp(n+2,vector<int>(n+2,0));
-        // return solve(1,n,nums,dp);
+        nums.push_back(1);
 
-        for(int i=n;i>=1;i--){
-            for(int j=1;j<=n;j++){
-                if(i>j){
-                    continue;
-                }
-                int mx=INT_MIN;
-                for(int ind=i;ind<=j;ind++){
-                    int cost=nums[i-1]*nums[ind]*nums[j+1]+dp[i][ind-1]+dp[ind+1][j];
-                    mx=max(mx,cost);
-                }
-                dp[i][j]=mx;
-            }
-        }
-        return dp[1][n];
+        vector<vector<int>> dp(n+2, vector<int>(n+2,-1));
+        return solve(1,n,nums,dp);
     }
 };
