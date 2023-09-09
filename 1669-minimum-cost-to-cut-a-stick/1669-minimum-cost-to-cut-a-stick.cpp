@@ -8,35 +8,23 @@ public:
             return dp[i][j];
         }
         int mn=INT_MAX;
-        for(int ind=i;ind<=j;ind++){
-            int cost=cuts[j+1]-cuts[i-1] + solve(i,ind-1,cuts,dp)+solve(ind+1,j,cuts,dp);
-            mn=min(mn,cost);
+        
+        for(int k=i;k<=j;k++){
+            int steps=cuts[j+1]-cuts[i-1]+solve(i,k-1,cuts,dp)+solve(k+1,j,cuts,dp);
+            if(steps<mn){
+                mn=steps;
+            }
         }
-        return dp[i][j]=mn; 
+        return dp[i][j]=mn;
     }
 
     int minCost(int n, vector<int>& cuts) {
-        int c=cuts.size();
+        int sz=cuts.size();
+        cuts.push_back(0);
         cuts.push_back(n);
-        cuts.insert(cuts.begin(),0);
-        vector<vector<int>> dp(c+2,vector<int>(c+2,0));
-        sort(cuts.begin(),cuts.end());
-        //return solve(1,c,cuts,dp);
+        sort(cuts.begin(),cuts.end()); 
+        vector<vector<int>> dp(sz+1, vector<int>(sz+1,-1));
 
-        for(int i=c;i>=1;i--){
-            for(int j=1;j<=c;j++){
-                if(i>j){
-                    continue;
-                }
-                int mn=INT_MAX;
-                
-                for(int ind=i;ind<=j;ind++){
-                    int cost=cuts[j+1]-cuts[i-1]+dp[i][ind-1]+dp[ind+1][j];
-                    mn=min(mn,cost);
-                }
-                dp[i][j]=mn;
-            }
-        }
-        return dp[1][c];
+        return solve(1,sz,cuts,dp);
     }
 };
