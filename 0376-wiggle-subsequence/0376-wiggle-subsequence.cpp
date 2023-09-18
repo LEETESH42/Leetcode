@@ -1,33 +1,37 @@
 class Solution {
 public:
-    int solve(int ind, vector<int>& nums, vector<vector<vector<int>>>& dp, int buy, int prev){
-        if(ind==nums.size()){
+    int solve(int ind, int prev, vector<int>& arr, vector<vector<int>>& dp){
+        if(ind>=arr.size()){
             return 0;
         }
-        if(dp[ind][prev][buy]!=-1){
-            return dp[ind][prev][buy];
-        }
 
-        int profit=0;
+        if(dp[ind][prev+1]!=-1){
+            return dp[ind][prev+1];
+        }
+        int pick=0;
+        if(prev==-1 || (arr[ind]<0 && arr[prev]>0) || (arr[ind]>0 && arr[prev]<0)){
+            pick=1+solve(ind+1,ind,arr,dp);
+        }
+        int notpi=solve(ind+1,prev,arr,dp);
 
-        if(nums[ind]==nums[prev]){
-            profit=solve(ind+1,nums,dp,buy,ind);
-        }
-        else{
-            
-            if(buy==1 && (nums[ind]>nums[prev])){
-                profit=max(1+solve(ind+1,nums,dp,0,ind), solve(ind+1,nums,dp,1,prev));
-            }
-            if(buy==0 && (nums[ind]<nums[prev])){
-                profit=max(1+solve(ind+1,nums,dp,1,ind), solve(ind+1,nums,dp,0,prev));
-            }
-        }
-        return dp[ind][prev][buy]=profit;
+        return dp[ind][prev+1]=max(pick,notpi);
     }
 
     int wiggleMaxLength(vector<int>& nums) {
         int n=nums.size();
-        vector<vector<vector<int>>> dp(n, vector<vector<int>>(n,vector<int>(2,-1)));
-        return max(solve(1,nums,dp,1,0)+1, solve(1,nums,dp,0,0)+1);
+        if(n==1){
+            return 1;
+        }
+
+        vector<int> arr;
+        for(int i=1;i<n;i++){
+            if(nums[i]!=nums[i-1])
+                arr.push_back(nums[i]-nums[i-1]);
+        }
+
+        vector<vector<int>> dp(n+1,vector<int>(n+1,-1));
+
+        int mx=solve(0,-1,arr,dp);
+        return mx+1;
     }
 };
