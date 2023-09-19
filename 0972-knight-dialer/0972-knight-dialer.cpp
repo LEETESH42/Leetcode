@@ -1,7 +1,7 @@
 class Solution {
 public:
     int mod=1e9+7;
-    long long dp[5004][10];
+    vector<vector<long long>> dp{5004, vector<long long> (10,-1)};
     vector<vector<int>> graph={{4,6},{8,6},{7,9},{8,4},{3,9,0},{},{1,7,0},{6,2},{1,3},{2,4}};
 
     long long solve(int ind, int n){
@@ -24,7 +24,6 @@ public:
         if(n==1){
             return 10;
         }
-        memset(dp,-1,sizeof(dp));
         long long ans=0;
 
         for(int i=0;i<=9;i++){
