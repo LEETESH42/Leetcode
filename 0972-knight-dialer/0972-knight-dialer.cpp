@@ -1,37 +1,27 @@
 class Solution {
 public:
     int mod=1e9+7;
-    vector<vector<long long>> dp{5004, vector<long long> (10,-1)};
-    vector<vector<int>> graph={{4,6},{8,6},{7,9},{8,4},{3,9,0},{},{1,7,0},{6,2},{1,3},{2,4}};
-
-    long long solve(int ind, int n){
-        if(n==0){
-            return 1;
-        }
-        if(dp[n][ind]!=-1){
-            return dp[n][ind];
-        }
-        long long ans=0;
-
-        for(auto it:graph[ind]){
-            ans+=solve(it,n-1);
-            ans=ans%mod;
-        }   
-        return dp[n][ind]=ans%mod;
-    }
-
     int knightDialer(int n) {
-        if(n==1){
-            return 10;
+        vector<long long> curr(10,1);
+        vector<long long> next=curr;
+
+        for(int i=2;i<=n;i++){
+            next[0]=(curr[4]%mod + curr[6]%mod)%mod;
+            next[1]=(curr[6]%mod + curr[8]%mod)%mod;
+            next[2]=(curr[7]%mod + curr[9]%mod)%mod;
+            next[3]=(curr[4]%mod + curr[8]%mod)%mod;
+            next[4]=(curr[3]%mod + curr[9]%mod +curr[0]%mod)%mod;
+            next[5]=0;
+            next[6]=(curr[1]%mod + curr[7]%mod +curr[0]%mod)%mod;
+            next[7]=(curr[2]%mod + curr[6]%mod)%mod;
+            next[8]=(curr[1]%mod + curr[3]%mod)%mod;
+            next[9]=(curr[4]%mod + curr[2]%mod)%mod;
+            curr=next;
         }
         long long ans=0;
-
-        for(int i=0;i<=9;i++){
-            if(i==5){
-                continue;
-            }
-            ans+=solve(i,n-1)%mod;
-            ans=ans%mod;
+        for(int i=0;i<10;i++){
+            ans+=next[i];
+            ans%=mod;
         }
         return ans%mod;
     }
