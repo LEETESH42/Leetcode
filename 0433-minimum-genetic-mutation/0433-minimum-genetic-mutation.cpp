@@ -1,35 +1,55 @@
 class Solution {
 public:
+    bool diff(string &f, string s){
+        int d=0;
+        for(int i=0;i<f.size();i++){
+            if(f[i]!=s[i]){
+                d++;
+            }
+        }
+        if(d!=1){
+            return false;
+        }
+        return true;
+    }
+
     int minMutation(string startGene, string endGene, vector<string>& bank) {
-        queue<pair<string,int>> q;
-        q.push({startGene,0});
-        unordered_map<string,int> mp;
-        for(auto it:bank){
-            mp[it]=1;
+        unordered_map<string,bool> vis;
+        for(auto i:bank){
+            vis[i]=0;
         }
-        vector<char> vec={'A','C','G','T'};
-        mp.erase(startGene);
-        while(!q.empty()){
-            auto x=q.front();
-            q.pop();
+        if(vis.find(endGene)==vis.end()){
+            return -1;
+        }
+        if(vis.find(startGene)==vis.end()){
+            bank.push_back(startGene);
+        }
 
-            if(x.first==endGene){
-                return x.second;
-            }
-
-            for(int i=0;i<8;i++){
-                char original=x.first[i];
-                for(auto ch:vec){
-                    x.first[i]=ch;
-                    if(mp.find(x.first)!=mp.end()){
-                        q.push({x.first,x.second+1});
-                        mp.erase(x.first);
-                    }
+        unordered_map<string,vector<string>> adj;
+        for(int i=bank.size()-1;i>0;i--){
+            for(int j=i-1;j>=0;j--){
+                if(diff(bank[i],bank[j])){
+                    adj[bank[i]].push_back(bank[j]);
+                    adj[bank[j]].push_back(bank[i]);
                 }
-                x.first[i]=original;
             }
-
         }
+
+        queue<pair<int,string>> q;
+        q.push({0,startGene});
+        while(!q.empty()){
+            if(endGene==q.front().second){
+                return q.front().first;
+            }
+            auto fr=q.front();
+            q.pop();
+            vis[fr.second]=true;
+            for(auto it:adj[fr.second]){
+                if(!vis[it]){
+                    q.push({fr.first+1,it});
+                }
+            }
+        } 
         return -1;
     }
 };
