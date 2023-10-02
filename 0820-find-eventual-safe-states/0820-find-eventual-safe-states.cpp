@@ -1,38 +1,41 @@
 class Solution {
 public:
+    vector<int> vis;
+
+    bool dfs(int node, vector<vector<int>>& graph){
+        if(vis[node]==1){
+            return false;
+        }
+        if(vis[node]==2){
+            return true;
+        }
+
+        vis[node]=1;
+        for(auto it:graph[node]){
+            if(!dfs(it,graph)){
+                return false;
+            }
+        }
+
+        vis[node]=2;
+        return true;
+    }
+
     vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
         int n=graph.size();
-        vector<vector<int>> revGraph(n);
-        vector<int> indegree(n,0);
+        vis.resize(n);
 
         for(int i=0;i<n;i++){
-            for(auto it:graph[i]){
-                revGraph[it].push_back(i);
-                indegree[i]++;
+            if(!vis[i]){
+                dfs(i,graph);
             }
         }
-
-        queue<int> q;
         vector<int> ans;
         for(int i=0;i<n;i++){
-            if(indegree[i]==0){
-                q.push(i);
+            if(vis[i]==2){
+                ans.push_back(i);
             }
         }
-
-        while(!q.empty()){
-            int cur=q.front();
-            q.pop();
-            ans.push_back(cur);
-            
-            for(auto it:revGraph[cur]){
-                indegree[it]--;
-                if(indegree[it]==0){
-                    q.push(it);
-                }
-            }
-        }
-        sort(ans.begin(),ans.end());
         return ans;
     }
 };
