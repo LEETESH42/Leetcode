@@ -11,26 +11,31 @@
  */
 class Solution {
 public:
-    int dfs(TreeNode* root){
+    int solve(TreeNode* root){
         if(root==NULL){
             return 0;
         }
-        int lh=dfs(root->left);
-        if(lh==-1){
+
+        int l=solve(root->left);
+        int r=solve(root->right);
+
+        if(l==-1 || r==-1 || abs(l-r)>1){
             return -1;
         }
-        int rh=dfs(root->right);
-        if(rh==-1){
-            return -1;
+        else{
+            return max(l,r)+1;
         }
 
-        if(abs(lh-rh)>1){
-            return -1;
-        }
-        return 1+max(lh,rh);
     }
 
     bool isBalanced(TreeNode* root) {
-        return dfs(root)!=-1;
+        if(root==NULL){
+            return 1;
+        }
+
+        if(solve(root)==-1){
+            return 0;
+        }
+        return 1;
     }
 };
